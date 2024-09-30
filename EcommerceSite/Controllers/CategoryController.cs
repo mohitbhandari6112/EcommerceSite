@@ -1,19 +1,20 @@
-﻿using EcommerceSite.Data;
-using EcommerceSite.Models;
+﻿using Ecommerce.DataAccess.Data;
+using Ecommerce.DataAccess.Repository.IRepository;
+using Ecommerce.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EcommerceSite.Controllers
 {
     public class CategoryController : Controller
     {
-        private readonly ApplicationDbContext _db;
-        public CategoryController(ApplicationDbContext db)
+        private readonly ICategoryRepository _CategoryRepo;
+        public CategoryController(ICategoryRepository db)
         {
-            _db = db;
+            _CategoryRepo = db;
         }
         public IActionResult Index()
         {
-            List<Category> CategoryList=_db.Categories.ToList();
+            List<Category> CategoryList = (List<Category>)_CategoryRepo.GetAll();
             return View(CategoryList);
         }
         public  IActionResult Add() {
@@ -27,8 +28,8 @@ namespace EcommerceSite.Controllers
             //    ModelState.AddModelError("Name", "Category Name and Display Order cannot be same");
             //}
             if (ModelState.IsValid) {
-                _db.Categories.Add(ctg);
-                _db.SaveChanges();
+                _CategoryRepo.Add(ctg);
+                _CategoryRepo.Save();
                 TempData["success"] = "Category created successfully";
                 return RedirectToAction("Index");
             }
@@ -43,7 +44,7 @@ namespace EcommerceSite.Controllers
                 return NotFound();
             }
 
-            Category? CategoryFromDb=_db.Categories.FirstOrDefault(x => x.Id == id);
+            Category CategoryFromDb=_CategoryRepo.Get(x => x.Id == id);
 
             //Category CategoryFromDb1=_db.Categories.Find(id);
             if (CategoryFromDb == null)
@@ -57,8 +58,8 @@ namespace EcommerceSite.Controllers
         {
             if (ModelState.IsValid)
             {
-                _db.Categories.Update(ctg);
-                _db.SaveChanges();
+                 _CategoryRepo.Update(ctg);
+                _CategoryRepo.Save();
                 TempData["success"] = "Category updated successfully";
                 return RedirectToAction("Index");
             }
@@ -73,7 +74,7 @@ namespace EcommerceSite.Controllers
                 return NotFound();
             }
 
-            Category? CategoryFromDb = _db.Categories.FirstOrDefault(x => x.Id == id);
+            Category? CategoryFromDb = _CategoryRepo.Get(x => x.Id == id);
             if (CategoryFromDb == null)
             {
                 return NotFound();
@@ -84,13 +85,13 @@ namespace EcommerceSite.Controllers
         [HttpPost,ActionName("Delete")]
         public IActionResult DeletePost(int? id)
         {
-            Category? obj = _db.Categories.Find(id);
-            if(obj == null)
+            Category? obj = _CategoryRepo.Get(x => x.Id == id);
+            if (obj == null)
             {
                 return NotFound();
             }
-            _db.Categories.Remove(obj);
-            _db.SaveChanges();
+            _CategoryRepo.Remove(obj);
+            _CategoryRepo.Save();
             TempData["success"] = "Category deleted successfully";
             return RedirectToAction("Index");
 

@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace EcommerceSite.Migrations
+namespace Ecommerce.DataAccess.Migrations
 {
     /// <inheritdoc />
     public partial class changesinCategoriesTable : Migration
