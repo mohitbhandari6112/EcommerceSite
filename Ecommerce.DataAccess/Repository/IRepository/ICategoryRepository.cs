@@ -9,6 +9,7 @@ namespace Ecommerce.DataAccess.Repository.IRepository
 {
     public interface ICategoryRepository:IRepository<Category>
     {
+        bool Select(Action<object> value);
         void Update(Category obj);
 
     }

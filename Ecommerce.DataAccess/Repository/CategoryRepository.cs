@@ -19,6 +19,11 @@ namespace Ecommerce.DataAccess.Repository
             
         }
 
+        public bool Select(Action<object> value)
+        {
+            throw new NotImplementedException();
+        }
+
         public void Update(Category obj)
         {
             _db.Categories.Update(obj);
