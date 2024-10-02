@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Ecommerce.DataAccess.Data;
 using Ecommerce.DataAccess.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Ecommerce.DataAccess.Repository
 {
@@ -18,22 +19,40 @@ namespace Ecommerce.DataAccess.Repository
         {
             _db = db;
             this.DbSet=_db.Set<T>();
+            _db.Products.Include(u => u.Category);
         }
         public void Add(T item)
         {
             DbSet.Add(item);
         }
 
-        public T Get(Expression<Func<T, bool>> filter)
+        public T Get(Expression<Func<T, bool>> filter, string? IncludeProperties = null)
         {
             IQueryable<T> query = DbSet;
-            query=query.Where(filter);
+            if (!String.IsNullOrEmpty(IncludeProperties))
+            {
+                foreach (var IncludeProp in IncludeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(IncludeProp);
+
+                }
+            }
+            query =query.Where(filter);
             return query.FirstOrDefault();
         }
 
-        public IEnumerable<T> GetAll()
+        //Category,covertype
+        public IEnumerable<T> GetAll(string? IncludeProperties=null)
         {
+   
             IQueryable<T> query = DbSet;
+            if (!String.IsNullOrEmpty(IncludeProperties))
+            {
+                foreach (var IncludeProp  in IncludeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)) {
+                    query = query.Include(IncludeProp);
+
+                }
+            }
             return query.ToList();
         }
 

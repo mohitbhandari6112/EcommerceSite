@@ -1,8 +1,8 @@
 ﻿@model ProductVM
-<form method="post">
+<form method="post" enctype="multipart/form-data">
     <div class="border p-3 mt-4">
         <div class="row pb-2">
-            <h2 class="text-primary">Create Product</h2>
+            <h2 class="text-primary">@(Model.Product.Id!=0?"Update Product":"Create Product")</h2>
             <hr />
         </div>
         <div class="mb-3 p-0">
@@ -13,7 +13,6 @@
         <div class="mb-3">
             <label asp-for="Product.Description"></label>
             <textarea asp-for="Product.Description" class="form-control"></textarea>
-            <span asp-validation-for="Product.Description" class="text-danger"></span>
         </div>
         <div class="mb-3">
             <label asp-for="Product.ISBN"></label>
@@ -45,13 +44,6 @@
             <input asp-for="Product.Price100" class="form-control" />
             <span asp-validation-for="Product.Price100" class="text-danger"></span>
         </div>
-
-        <div class="mb-3">
-            <label asp-for="Product.ImageUrl"></label>
-            <input asp-for="Product.ImageUrl" class="form-control" />
-            <span asp-validation-for="Product.ImageUrl" class="text-danger"></span>
-        </div>
-
         <div class="mb-3">
             <label asp-for="Product.CategoryId"></label>
             <select asp-for="Product.CategoryId" asp-items="@Model.CategoryList" class="form-select">
@@ -59,9 +51,31 @@
             </select>
             <span asp-validation-for="Product.CategoryId" class="text-danger"></span>
         </div>
+        
         <div class="row">
+        <div class="mb-3 col-8">
+            <label asp-for="Product.ImageUrl"></label>
+            <input type="file" name="file" class="form-control" />
+        </div>
+            @if (!String.IsNullOrEmpty(@Model.Product.ImageUrl))
+            {
+                <div class="col-4">
+                    <img src="@Model.Product.ImageUrl" width="100%" height="200px"
+                         style="border-radius:5px" />
+                </div>
+                
+            }
+        </div>
+        <div class="row">
+            <input asp-for="Product.Id" hidden />
+            <input asp-for="Product.ImageUrl" hidden/>
             <div class="col-6 col-md-3">
-                <button type="submit" class="btn btn-primary form-control">Create</button>
+                @if(Model.Product.Id!=0){
+                    <button type="submit" class="btn btn-primary form-control">Update</button>
+                }else{
+                    <button type="submit" class="btn btn-primary form-control">Create</button>
+                }
+                
             </div>
             <div class="col-6 col-md-3">
                 <a asp-action="Index" asp-controller="Product" class="btn btn-secondary form-control">Back to List</a>
@@ -74,4 +88,24 @@
     @{
         <partial name="_ValidationScriptsPartial" />
     }
+    <script>
+        tinymce.init({
+            selector: 'textarea',
+            plugins: [
+                // Core editing features
+                'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'lists', 'visualblocks', 'wordcount',
+                // Your account includes a free trial of TinyMCE premium features
+                // Try the most popular premium features until Oct 16, 2024:
+                'checklist', 'mediaembed', 'casechange', 'export', 'formatpainter', 'pageembed', 'a11ychecker', 'tinymcespellchecker', 'permanentpen', 'powerpaste', 'advcode', 'editimage', 'advtemplate', 'ai', 'mentions', 'tinycomments', 'tableofcontents', 'footnotes', 'mergetags', 'autocorrect', 'typography', 'inlinecss', 'markdown',
+            ],
+            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+            tinycomments_mode: 'embedded',
+            tinycomments_author: 'Author name',
+            mergetags_list: [
+                { value: 'First.Name', title: 'First Name' },
+                { value: 'Email', title: 'Email' },
+            ],
+            ai_request: (request, respondWith) => respondWith.string(() => Promise.reject('See docs to implement AI Assistant')),
+        });
+    </script>
 }
