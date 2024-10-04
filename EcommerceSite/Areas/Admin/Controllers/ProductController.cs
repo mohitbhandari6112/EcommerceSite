@@ -98,33 +98,33 @@ namespace EcommerceSite.Areas.Admin.Controllers
             return View(productVM);
         }
 
-        public IActionResult Delete(int? id)
-        {
-            if(id== null)
-            {
-                return NotFound();
-            }
-            Product? prod = _UnitOfWork.Product.Get(x => x.Id == id);
-            if (prod == null)
-            {
-                return NotFound();
-            }
-            return View(prod);
-        }
+        //public IActionResult Delete(int? id)
+        //{
+        //    if(id== null)
+        //    {
+        //        return NotFound();
+        //    }
+        //    Product? prod = _UnitOfWork.Product.Get(x => x.Id == id);
+        //    if (prod == null)
+        //    {
+        //        return NotFound();
+        //    }
+        //    return View(prod);
+        //}
 
-        [HttpPost,ActionName("Delete")]
-        public IActionResult DeletePst(int? id)
-        {
-            Product? prod = _UnitOfWork.Product.Get(x => x.Id == id);
-            if (prod == null)
-            {
-                return NotFound();
-            }
-            _UnitOfWork.Product.Remove(prod);
-            _UnitOfWork.Save();
-            TempData["success"] = "Category deleted successfully";
-            return RedirectToAction("Index");
-        }
+        //[HttpPost,ActionName("Delete")]
+        //public IActionResult DeletePst(int? id)
+        //{
+        //    Product? prod = _UnitOfWork.Product.Get(x => x.Id == id);
+        //    if (prod == null)
+        //    {
+        //        return NotFound();
+        //    }
+        //    _UnitOfWork.Product.Remove(prod);
+        //    _UnitOfWork.Save();
+        //    TempData["success"] = "Category deleted successfully";
+        //    return RedirectToAction("Index");
+        //}
 
         #region API calls
         [HttpGet]
@@ -135,6 +135,23 @@ namespace EcommerceSite.Areas.Admin.Controllers
             {
                 Data = AllProduct
             });
+        }
+
+        [HttpDelete]
+        public IActionResult Delete(int id)
+        {
+            var ObjToDelete=_UnitOfWork.Product.Get(u=>u.Id==id);
+            if(ObjToDelete == null) {
+                return Json(new { success=false, message="Product Not Found" });
+            }
+            string oldPath = Path.Combine(_WebHostEnvironment.WebRootPath, ObjToDelete.ImageUrl.TrimStart('\\'));
+            if (System.IO.File.Exists(oldPath))
+            {
+                System.IO.File.Delete(oldPath);
+            }
+            _UnitOfWork.Product.Remove(ObjToDelete);
+            _UnitOfWork.Save();
+            return Json(new { succuess = true, message = "Product Deleted Successfully" }); 
         }
         #endregion
     }
