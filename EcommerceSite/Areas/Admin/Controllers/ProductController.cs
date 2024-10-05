@@ -101,33 +101,6 @@ namespace EcommerceSite.Areas.Admin.Controllers
             return View(productVM);
         }
 
-        //public IActionResult Delete(int? id)
-        //{
-        //    if(id== null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    Product? prod = _UnitOfWork.Product.Get(x => x.Id == id);
-        //    if (prod == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    return View(prod);
-        //}
-
-        //[HttpPost,ActionName("Delete")]
-        //public IActionResult DeletePst(int? id)
-        //{
-        //    Product? prod = _UnitOfWork.Product.Get(x => x.Id == id);
-        //    if (prod == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    _UnitOfWork.Product.Remove(prod);
-        //    _UnitOfWork.Save();
-        //    TempData["success"] = "Category deleted successfully";
-        //    return RedirectToAction("Index");
-        //}
 
         #region API calls
         [HttpGet]

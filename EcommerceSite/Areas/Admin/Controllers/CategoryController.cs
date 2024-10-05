@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace EcommerceSite.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = SD.Role_Admin)]
+    //[Authorize(Roles = SD.Role_Customer)]
     public class CategoryController : Controller
     {
         private readonly IUnitOfWork _UnitOfWork;

@@ -10,6 +10,7 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading;
 using System.Threading.Tasks;
+using Ecommerce.DataAccess.Repository.IRepository;
 using Ecommerce.Models;
 using Ecommerce.Utils;
 using Microsoft.AspNetCore.Authentication;
@@ -34,8 +35,10 @@ namespace EcommerceSite.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<IdentityUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly IUnitOfWork _unitOfWork;
 
         public RegisterModel(
+            IUnitOfWork unitOfWork,
             UserManager<IdentityUser> userManager,
             RoleManager<IdentityRole> roleManager,
             IUserStore<IdentityUser> userStore,
@@ -43,6 +46,7 @@ namespace EcommerceSite.Areas.Identity.Pages.Account
             ILogger<RegisterModel> logger,
             IEmailSender emailSender)
         {
+            _unitOfWork = unitOfWork;
             _userManager = userManager;
             _roleManager = roleManager;
             _userStore = userStore;
@@ -108,6 +112,10 @@ namespace EcommerceSite.Areas.Identity.Pages.Account
 
             [ValidateNever]
             public IEnumerable<SelectListItem> RoleList { get; set; }
+
+            public int? CompanyId { get; set; }
+            [ValidateNever]
+            public IEnumerable<SelectListItem> CompanyList { get; set; }
         }
 
 
@@ -126,7 +134,12 @@ namespace EcommerceSite.Areas.Identity.Pages.Account
                 {
                     Text = x,
                     Value = x
-                })
+                }),
+                CompanyList =_unitOfWork.Company.GetAll().Select(x => new SelectListItem
+                {
+                    Text = x.Name,
+                    Value = x.Id.ToString()
+                }),
             };
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
@@ -139,6 +152,9 @@ namespace EcommerceSite.Areas.Identity.Pages.Account
             if (ModelState.IsValid)
             {
                 var user = CreateUser();
+                if (Input.Role == SD.Role_Company) { 
+                    user.CompanyId = Input.CompanyId;
+                }
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);

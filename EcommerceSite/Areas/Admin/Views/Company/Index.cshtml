@@ -1,4 +1,4 @@
-﻿
+﻿@model List<Company>
 
 <div class="container">
     <div class="row pt-4">
@@ -6,27 +6,24 @@
             <h2 class="text-primary">Product List</h2>
         </div>
         <div class="col-6 text-end">
-            <a asp-controller="Product" asp-action="Upsert" class="btn btn-primary"><i class="bi bi-plus-square"></i> Create New Product</a>
+            <a asp-controller="Company" asp-action="Upsert" class="btn btn-primary"><i class="bi bi-plus-square"></i> Create New Comapany</a>
         </div>
     </div>
     <table id="tblData" class="table table-bordered table-striped mt-3">
         <thead>
             <tr>
-                <th>Product Title</th>
-                <th>ISBN</th>
-                <th>Price</th>
-                <th>Author</th>
-                <th>Category</th>
-                 <th>action</th>
-            </tr>   
-            </thead>
-            <tbody></tbody>
+                <th>Name</th>
+                <th>Phone No</th>
+                <th>Address</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
     </table>
 </div>
 
-@section Scripts{
-    
-<script>
+@section Scripts {
+
+    <script>
         var dataTable;
 
         $(document).ready(function () {
@@ -35,35 +32,35 @@
 
 
         function loadAllData() {
-            dataTable= $('#tblData').DataTable({
+            dataTable = $('#tblData').DataTable({
                 "ajax": {
-                    "url": '/admin/product/getall',
+                    "url": '/admin/company/getall',
                     "type": 'GET',
                 },
                 "columns": [
-                    { data: 'title' },
-                    { data: 'isbn' },
-                    { data: 'listPrice' },
-                    { data: 'author' },
-                    { data: 'category.name' },
-                    {data: 'id',
-                     "render": function (data) {
+                    { data: 'name' },
+                    { data: 'address' },
+                    { data: 'phoneNo' },
+                    {
+                        data: 'id',
+                        "render": function (data) {
                             return `<div class="w-75 btn-group" role="group">
-                                            <a href='/admin/product/upsert?id=${data}' class="btn btn-primary mx-2">
-                                            <i class="bi bi-pencil"></i> Edit
-                                            </a>
-                                            <a onClick=Delete('/admin/product/delete?id=${data}') class="btn btn-danger mx-2">
-                                            <i class="bi bi-trash"></i> Delete
-                                            </a>
-                                     </div>
-                         `
-                        }}
+                                                    <a href='/admin/company/upsert?id=${data}' class="btn btn-primary mx-2">
+                                                    <i class="bi bi-pencil"></i> Edit
+                                                    </a>
+                                                    <a onClick=Delete('/admin/company/delete?id=${data}') class="btn btn-danger mx-2">
+                                                    <i class="bi bi-trash"></i> Delete
+                                                    </a>
+                                            </div>`
+
+                        }
+                    }
 
                 ]
             });
         }
 
-        function Delete(url){
+        function Delete(url) {
             Swal.fire({
                 title: "Are you sure?",
                 text: "You won't be able to revert this!",
@@ -85,6 +82,6 @@
                 }
             });
         }
-     
-</script>
+
+    </script>
 }

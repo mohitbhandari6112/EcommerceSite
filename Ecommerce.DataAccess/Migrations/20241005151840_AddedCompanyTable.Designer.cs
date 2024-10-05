@@ -4,6 +4,7 @@ using Ecommerce.DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ecommerce.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241005151840_AddedCompanyTable")]
+    partial class AddedCompanyTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -93,38 +96,6 @@ namespace Ecommerce.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Companies");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Address = "lalitpur",
-                            City = "ktm",
-                            Name = "Techmind",
-                            PhoneNo = "999999",
-                            PostalCode = "777073",
-                            State = "Bagmati"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Address = "butwal",
-                            City = "btwl",
-                            Name = "remoteTech",
-                            PhoneNo = "999999",
-                            PostalCode = "777073",
-                            State = "lumbini"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Address = "biratnagar",
-                            City = "biratnagar",
-                            Name = "HimalayaTech",
-                            PhoneNo = "999999",
-                            PostalCode = "777073",
-                            State = "bagmati"
-                        });
                 });
 
             modelBuilder.Entity("Ecommerce.Models.Product", b =>
@@ -477,16 +448,11 @@ namespace Ecommerce.DataAccess.Migrations
                     b.Property<string>("Address")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("CompanyId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Postalcode")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("State")
                         .HasColumnType("nvarchar(max)");
-
-                    b.HasIndex("CompanyId");
 
                     b.HasDiscriminator().HasValue("ApplicationUser");
                 });
@@ -551,15 +517,6 @@ namespace Ecommerce.DataAccess.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Ecommerce.Models.ApplicationUser", b =>
-                {
-                    b.HasOne("Ecommerce.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId");
-
-                    b.Navigation("Company");
                 });
 #pragma warning restore 612, 618
         }
