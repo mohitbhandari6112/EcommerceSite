@@ -9,8 +9,8 @@ namespace Ecommerce.DataAccess.Repository.IRepository
 {
     public interface IRepository<T> where T : class
     {
-       IEnumerable<T> GetAll(string? IncludeProperties = null);
-        T Get(Expression<Func<T,bool>> filter, string? IncludeProperties = null);
+       IEnumerable<T> GetAll(Expression<Func<T, bool>>? filter=null,string? IncludeProperties = null);
+        T Get(Expression<Func<T,bool>> filter, string? IncludeProperties = null,bool tracked=false);
         void Add(T item);
         void Remove(T item);
         void RemoveRange(IEnumerable<T> items);

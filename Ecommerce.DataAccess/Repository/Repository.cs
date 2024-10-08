@@ -26,9 +26,18 @@ namespace Ecommerce.DataAccess.Repository
             DbSet.Add(item);
         }
 
-        public T Get(Expression<Func<T, bool>> filter, string? IncludeProperties = null)
+        public T Get(Expression<Func<T, bool>> filter, string? IncludeProperties = null,bool tracked=false)
         {
-            IQueryable<T> query = DbSet;
+            IQueryable<T> query;
+
+            if (tracked)
+            {
+                query = DbSet;
+            }
+            else {
+                query = DbSet.AsNoTracking();
+            }
+            query = query.Where(filter);
             if (!String.IsNullOrEmpty(IncludeProperties))
             {
                 foreach (var IncludeProp in IncludeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
@@ -37,15 +46,19 @@ namespace Ecommerce.DataAccess.Repository
 
                 }
             }
-            query =query.Where(filter);
+           
             return query.FirstOrDefault();
         }
 
         //Category,covertype
-        public IEnumerable<T> GetAll(string? IncludeProperties=null)
+        public IEnumerable<T> GetAll(Expression<Func<T, bool>>? filter=null,string? IncludeProperties=null)
         {
    
             IQueryable<T> query = DbSet;
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
             if (!String.IsNullOrEmpty(IncludeProperties))
             {
                 foreach (var IncludeProp  in IncludeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)) {
